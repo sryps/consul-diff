@@ -1,7 +1,6 @@
 # Consul KV Diff Tool
 
-A simple tool that logs the diff between changes in Consul KV store at a given interval.
-It logs the changes and also commits them to a Git repository.
+A simple tool that logs the diff between changes in Consul KV store at a given interval and pushes KV as JSON file to a dedicated Github repo.
 
 ## Features
 
