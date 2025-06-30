@@ -144,6 +144,7 @@ func LogRedactedState(s State) {
 		Previous: make(map[string]string),
 		Current:  make(map[string]string),
 		GitConfig: GitConfig{
+			Enabled:     s.GitConfig.Enabled,
 			RepoPath:    s.GitConfig.RepoPath,
 			RemoteURL:   s.GitConfig.RemoteURL,
 			Filename:    s.GitConfig.Filename,
