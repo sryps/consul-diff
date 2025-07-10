@@ -7,7 +7,7 @@ import (
 )
 
 // WriteMapIfNotExists writes data to filename only if the file doesn't already exist.
-func WriteMapToFile(filename string, data map[string]string) error {
+func WriteMapToFile(filename string, data []map[string]string) error {
 	// O_CREATE: create if not exist
 	// O_EXCL: fail if file already exists
 	// O_WRONLY: write-only
@@ -26,7 +26,7 @@ func WriteMapToFile(filename string, data map[string]string) error {
 }
 
 // ReadMapFromFile reads a JSON file into a map[string]interface{}.
-func ReadMapFromFile(filepath string) (map[string]string, error) {
+func ReadMapFromFile(filepath string) ([]map[string]string, error) {
 	file, err := os.Open(filepath)
 	if err != nil {
 		return nil, err
@@ -40,5 +40,5 @@ func ReadMapFromFile(filepath string) (map[string]string, error) {
 		return nil, err
 	}
 
-	return result, nil
+	return []map[string]string{result}, nil
 }

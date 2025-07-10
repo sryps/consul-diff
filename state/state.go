@@ -10,8 +10,8 @@ import (
 )
 
 type State struct {
-	Previous      map[string]string
-	Current       map[string]string
+	Previous      []map[string]string
+	Current       []map[string]string
 	GitConfig     GitConfig
 	PollInterval  time.Duration
 	KeyPrefix     string
@@ -124,8 +124,8 @@ func InitState() *State {
 	}
 
 	returnData := &State{
-		Previous: make(map[string]string),
-		Current:  make(map[string]string),
+		Previous: []map[string]string{},
+		Current:  []map[string]string{},
 		GitConfig: GitConfig{
 			Enabled:     gitEnabledBool,
 			RepoPath:    repoPath,
@@ -149,8 +149,8 @@ func InitState() *State {
 
 func LogRedactedState(s State) {
 	returnDataRedacted := State{
-		Previous: make(map[string]string),
-		Current:  make(map[string]string),
+		Previous: []map[string]string{},
+		Current:  []map[string]string{},
 		GitConfig: GitConfig{
 			Enabled:     s.GitConfig.Enabled,
 			RepoPath:    s.GitConfig.RepoPath,

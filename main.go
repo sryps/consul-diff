@@ -80,7 +80,8 @@ func main() {
 		s.Previous, err = storage.ReadMapFromFile(filepath)
 		if err != nil {
 			log.Printf("Error reading previous KV state: %v", err)
-			s.Previous = make(map[string]string) // Initialize if file doesn't exist
+			s.Previous = []map[string]string{}
+
 		}
 
 		if s.Previous != nil {
