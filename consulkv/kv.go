@@ -22,7 +22,7 @@ func FetchKV(client *api.Client, prefix string) (map[string]string, error) {
 	return result, nil
 }
 
-func FetchKVBase64(client *api.Client, prefix string) (map[string]string, error) {
+func FetchKVBase64(client *api.Client, prefix string) ([]map[string]string, error) {
 	kv := client.KV()
 	pairs, _, err := kv.List(prefix, nil)
 	if err != nil {
@@ -30,6 +30,7 @@ func FetchKVBase64(client *api.Client, prefix string) (map[string]string, error)
 	}
 
 	result := make(map[string]string)
+
 	for _, pair := range pairs {
 		if pair.Value != nil {
 			result[pair.Key] = base64.StdEncoding.EncodeToString(pair.Value)
@@ -37,7 +38,8 @@ func FetchKVBase64(client *api.Client, prefix string) (map[string]string, error)
 			result[pair.Key] = ""
 		}
 	}
-	return result, nil
+
+	return []map[string]string{result}, nil
 }
 
 func LogKVDiff(prev, curr map[string]string, filepath string) {
