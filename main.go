@@ -58,9 +58,9 @@ func main() {
 			log.Fatalf("Error fetching initial KV state: %v", err)
 		}
 		err = storage.WriteMapToFile(s.GitConfig.Filename, firstRun)
-	}
-	if err != nil {
-		log.Fatalf("Error initializing storage file: %v", err)
+		if err != nil {
+			log.Fatalf("Error writing initial KV state to file: %v", err)
+		}
 	}
 
 	log.Printf("Using storage file: %s", s.GitConfig.Filename)

@@ -8,7 +8,6 @@ import (
 	"consuldiff/state"
 
 	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
 )
@@ -66,27 +65,17 @@ func SetupGitRepo(s state.State) (*git.Repository, error) {
 	if _, err := os.Stat(s.GitConfig.RepoPath + "/.git"); os.IsNotExist(err) {
 		if s.GitConfig.RemoteURL != "" {
 			log.Printf("Cloning repo from %s into %s", s.GitConfig.RemoteURL, s.GitConfig.RepoPath)
-			return git.PlainClone(s.GitConfig.RepoPath, false, &git.CloneOptions{
+			_, err := git.PlainClone(s.GitConfig.RepoPath, false, &git.CloneOptions{
 				URL: s.GitConfig.RemoteURL,
 				Auth: &http.BasicAuth{
 					Username: "git",             // GitHub accepts anything
 					Password: s.GitConfig.Token, // Personal Access Token
 				},
 			})
-		} else {
-			log.Printf("Initializing new git repo at %s", s.GitConfig.RepoPath)
-			repo, err := git.PlainInit(s.GitConfig.RepoPath, false)
 			if err != nil {
+				log.Printf("Error cloning repo: %v", err)
 				return nil, err
 			}
-			_, err = repo.CreateRemote(&config.RemoteConfig{
-				Name: "origin",
-				URLs: []string{s.GitConfig.RemoteURL},
-			})
-			if err != nil {
-				return nil, err
-			}
-			return repo, nil
 		}
 	}
 	log.Printf("Opening existing repo at %s", s.GitConfig.RepoPath)
