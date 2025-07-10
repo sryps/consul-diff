@@ -56,6 +56,7 @@ func GitCommitAndPush(s state.State) error {
 		return err
 	}
 
+	log.Printf("Git changes pushed to %s", s.GitConfig.RemoteURL)
 	return nil
 }
 

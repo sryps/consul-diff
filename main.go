@@ -67,6 +67,8 @@ func main() {
 	log.Println("Starting KV polling for diff...")
 
 	for {
+		log.Println("Fetching current KV state from Consul...")
+
 		s.Current, err = consulkv.FetchKV(client, s.KeyPrefix)
 		if err != nil {
 			log.Printf("Error fetching KV: %v", err)
@@ -80,10 +82,12 @@ func main() {
 		}
 
 		if s.Previous != nil {
+			log.Println("Comparing current KV state with previous state from file: ", filepath)
 			consulkv.DiffKV(s.Previous, s.Current, filepath)
 		}
 
 		if s.GitConfig.Enabled {
+			log.Println("Git is enabled, committing changes if any...")
 			gitutil.GitCommitAndPush(*s)
 		}
 
