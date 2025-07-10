@@ -2,6 +2,7 @@ package consulkv
 
 import (
 	"consuldiff/storage"
+	"encoding/base64"
 	"log"
 
 	"github.com/hashicorp/consul/api"
@@ -21,7 +22,25 @@ func FetchKV(client *api.Client, prefix string) (map[string]string, error) {
 	return result, nil
 }
 
-func DiffKV(prev, curr map[string]string, filepath string) {
+func FetchKVBase64(client *api.Client, prefix string) (map[string]string, error) {
+	kv := client.KV()
+	pairs, _, err := kv.List(prefix, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	result := make(map[string]string)
+	for _, pair := range pairs {
+		if pair.Value != nil {
+			result[pair.Key] = base64.StdEncoding.EncodeToString(pair.Value)
+		} else {
+			result[pair.Key] = ""
+		}
+	}
+	return result, nil
+}
+
+func LogKVDiff(prev, curr map[string]string, filepath string) {
 	// Detect added or changed keys
 	for k, v := range curr {
 		if oldVal, ok := prev[k]; !ok {

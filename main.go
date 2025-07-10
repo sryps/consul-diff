@@ -24,6 +24,7 @@ func main() {
 	if s.GitConfig.Enabled {
 		gitutil.SetupGitRepo(*s)
 	}
+
 	config := api.DefaultConfig()
 	if s.TLSSkipVerify {
 		// Custom HTTP client with TLS skip verify
@@ -84,8 +85,14 @@ func main() {
 
 		if s.Previous != nil {
 			log.Println("Comparing current KV state with previous state from file: ", filepath)
-			consulkv.DiffKV(s.Previous, s.Current, filepath)
+			consulkv.LogKVDiff(s.Previous, s.Current, filepath)
 		}
+
+		kvB64, err := consulkv.FetchKVBase64(client, s.KeyPrefix)
+		if err != nil {
+			log.Printf("Error fetching KV Base64: %v", err)
+		}
+		storage.WriteMapToFile(filepath+".b64", kvB64)
 
 		if s.GitConfig.Enabled {
 			log.Println("Git is enabled, committing changes if any...")
