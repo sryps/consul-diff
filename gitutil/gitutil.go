@@ -32,6 +32,11 @@ func GitCommitAndPush(s state.State) error {
 	if err != nil {
 		return err
 	}
+	// Add the b64 file
+	_, err = w.Add(s.GitConfig.Filename + ".b64")
+	if err != nil {
+		return err
+	}
 
 	// Commit
 	_, err = w.Commit(s.GitConfig.Message, &git.CommitOptions{
