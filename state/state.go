@@ -22,6 +22,7 @@ type GitConfig struct {
 	Enabled     bool
 	RepoPath    string
 	RemoteURL   string
+	Branch      string
 	Filename    string
 	Message     string
 	AuthorName  string
@@ -69,6 +70,12 @@ func InitState() *State {
 	}
 	// if GIT_REPO_PATH ends in a slash, remove it
 	repoPath = strings.TrimSuffix(repoPath, "/")
+
+	// Ensure the GIT_BRANCH environment variable is set
+	if os.Getenv("GIT_BRANCH") == "" {
+		log.Println("Environment variable GIT_BRANCH is not set, using default 'main'")
+		os.Setenv("GIT_BRANCH", "main")
+	}
 
 	// Ensure the GIT_AUTHOR_NAME environment variable is set
 	if os.Getenv("GIT_AUTHOR_NAME") == "" {
@@ -123,6 +130,7 @@ func InitState() *State {
 			Enabled:     gitEnabledBool,
 			RepoPath:    repoPath,
 			RemoteURL:   os.Getenv("GIT_REMOTE_URL"),
+			Branch:      os.Getenv("GIT_BRANCH"),
 			Filename:    os.Getenv("STORAGE_FILENAME"),
 			Message:     os.Getenv("GIT_COMMIT_MESSAGE"),
 			AuthorName:  os.Getenv("GIT_AUTHOR_NAME"),

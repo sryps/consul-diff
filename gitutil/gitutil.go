@@ -8,6 +8,7 @@ import (
 	"consuldiff/state"
 
 	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
 )
@@ -71,6 +72,9 @@ func SetupGitRepo(s state.State) (*git.Repository, error) {
 					Username: "git",             // GitHub accepts anything
 					Password: s.GitConfig.Token, // Personal Access Token
 				},
+				ReferenceName: plumbing.ReferenceName("refs/heads/" + s.GitConfig.Branch),
+				SingleBranch:  true,
+				Depth:         1,
 			})
 			if err != nil {
 				log.Fatalf("Error cloning repo: %v", err)
