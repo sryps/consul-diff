@@ -88,6 +88,7 @@ func main() {
 			consulkv.LogKVDiff(s.Previous, s.Current, filepath)
 		}
 
+		log.Println("Writing current base64 KV state to file...")
 		kvB64, err := consulkv.FetchKVBase64(client, s.KeyPrefix)
 		if err != nil {
 			log.Printf("Error fetching KV Base64: %v", err)
