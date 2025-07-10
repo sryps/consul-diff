@@ -1,13 +1,14 @@
 package storage
 
 import (
+	"consuldiff/kvtypes"
 	"encoding/json"
 	"errors"
 	"os"
 )
 
 // WriteMapIfNotExists writes data to filename only if the file doesn't already exist.
-func WriteMapToFile(filename string, data []map[string]string) error {
+func WriteMapToFile(filename string, data []kvtypes.KVExportEntry) error {
 	// O_CREATE: create if not exist
 	// O_EXCL: fail if file already exists
 	// O_WRONLY: write-only
@@ -26,19 +27,19 @@ func WriteMapToFile(filename string, data []map[string]string) error {
 }
 
 // ReadMapFromFile reads a JSON file into a map[string]interface{}.
-func ReadMapFromFile(filepath string) ([]map[string]string, error) {
+func ReadMapFromFile(filepath string) ([]kvtypes.KVExportEntry, error) {
 	file, err := os.Open(filepath)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	var result map[string]string
+	var result []kvtypes.KVExportEntry
 	decoder := json.NewDecoder(file)
 	err = decoder.Decode(&result)
 	if err != nil {
 		return nil, err
 	}
 
-	return []map[string]string{result}, nil
+	return result, nil
 }

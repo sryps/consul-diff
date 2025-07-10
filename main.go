@@ -9,6 +9,7 @@ import (
 
 	"consuldiff/consulkv"
 	"consuldiff/gitutil"
+	"consuldiff/kvtypes"
 	"consuldiff/state"
 	"consuldiff/storage"
 
@@ -80,7 +81,7 @@ func main() {
 		s.Previous, err = storage.ReadMapFromFile(filepath)
 		if err != nil {
 			log.Printf("Error reading previous KV state: %v", err)
-			s.Previous = []map[string]string{}
+			s.Previous = []kvtypes.KVExportEntry{}
 
 		}
 
