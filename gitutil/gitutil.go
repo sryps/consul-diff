@@ -73,7 +73,7 @@ func SetupGitRepo(s state.State) (*git.Repository, error) {
 				},
 			})
 			if err != nil {
-				log.Printf("Error cloning repo: %v", err)
+				log.Fatalf("Error cloning repo: %v", err)
 				return nil, err
 			}
 		}

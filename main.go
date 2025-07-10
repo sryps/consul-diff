@@ -21,8 +21,9 @@ func main() {
 	s := state.InitState()
 
 	// Setup git repository configuration
-	gitutil.SetupGitRepo(*s)
-
+	if s.GitConfig.Enabled {
+		gitutil.SetupGitRepo(*s)
+	}
 	config := api.DefaultConfig()
 	if s.TLSSkipVerify {
 		// Custom HTTP client with TLS skip verify
