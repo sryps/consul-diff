@@ -95,7 +95,10 @@ func main() {
 		if err != nil {
 			log.Fatalf("Error fetching KV Base64: %v", err)
 		}
-		storage.WriteMapToFile(filepath+".b64", kvB64)
+		err = storage.WriteMapToFile(filepath+".b64", kvB64)
+		if err != nil {
+			log.Fatalf("Error writing Base64 KV state to file: %v", err)
+		}
 
 		if s.GitConfig.Enabled {
 			log.Println("Git is enabled, committing changes if any...")
