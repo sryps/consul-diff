@@ -74,13 +74,13 @@ func main() {
 
 		s.Current, err = consulkv.FetchKV(client, s.KeyPrefix)
 		if err != nil {
-			log.Printf("Error fetching KV: %v", err)
+			log.Fatalf("Error fetching KV: %v", err)
 		}
 
 		filepath := s.GitConfig.RepoPath + "/" + s.GitConfig.Filename
 		s.Previous, err = storage.ReadMapFromFile(filepath)
 		if err != nil {
-			log.Printf("Error reading previous KV state: %v", err)
+			log.Fatalf("Error reading previous KV state: %v", err)
 			s.Previous = []kvtypes.KVExportEntry{}
 
 		}
@@ -93,13 +93,16 @@ func main() {
 		log.Println("Writing current base64 KV state to file...")
 		kvB64, err := consulkv.FetchKVBase64(client, s.KeyPrefix)
 		if err != nil {
-			log.Printf("Error fetching KV Base64: %v", err)
+			log.Fatalf("Error fetching KV Base64: %v", err)
 		}
 		storage.WriteMapToFile(filepath+".b64", kvB64)
 
 		if s.GitConfig.Enabled {
 			log.Println("Git is enabled, committing changes if any...")
-			gitutil.GitCommitAndPush(*s)
+			err := gitutil.GitCommitAndPush(*s)
+			if err != nil {
+				log.Fatalf("Error committing and pushing changes to Git: %v", err)
+			}
 		}
 
 		time.Sleep(s.PollInterval)
