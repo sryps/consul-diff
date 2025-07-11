@@ -38,6 +38,16 @@ func GitCommitAndPush(s state.State) error {
 		return err
 	}
 
+	// Check if there are changes to commit
+	status, err := w.Status()
+	if err != nil {
+		return err
+	}
+	if status.IsClean() {
+		log.Printf("No changes to commit in %s", s.GitConfig.RepoPath)
+		return nil
+	}
+
 	// Commit
 	_, err = w.Commit(s.GitConfig.Message, &git.CommitOptions{
 		Author: &object.Signature{
@@ -57,11 +67,8 @@ func GitCommitAndPush(s state.State) error {
 			Password: s.GitConfig.Token, // Use a PAT (Personal Access Token)
 		},
 	})
-	if err == git.NoErrAlreadyUpToDate {
-		log.Printf("Git repo already up to date")
-		return nil
-	}
-	if err != nil {
+	if err != nil && err != git.NoErrAlreadyUpToDate {
+		log.Printf("Error pushing changes to %s: %v", s.GitConfig.RemoteURL, err)
 		return err
 	}
 
