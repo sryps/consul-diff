@@ -57,7 +57,11 @@ func GitCommitAndPush(s state.State) error {
 			Password: s.GitConfig.Token, // Use a PAT (Personal Access Token)
 		},
 	})
-	if err != nil && err != git.NoErrAlreadyUpToDate {
+	if err == git.NoErrAlreadyUpToDate {
+		log.Printf("Git repo already up to date")
+		return nil
+	}
+	if err != nil {
 		return err
 	}
 
